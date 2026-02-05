@@ -1,6 +1,6 @@
 # Library Project — Product Spec
 
-> **Status:** Planning. No code yet. This document is the source of truth for scope and functionality.
+> **Status:** Setup started. React + Vite app in `app/` with Supabase client; login/sign-up (same screen) and main page (building + status controls) in place. Database tables and Realtime not yet added.
 
 ---
 
@@ -73,11 +73,17 @@
 
 ## 6. Technical Constraints & Preferences
 
-- **Cost:** No paid services for this project—everything must be free (hosting, APIs, contact sync if we add it, etc.).
+- **Cost:** No paid services for this project—everything must be free (hosting, APIs, etc.).
 - Must work on: (browsers, devices — TBD)
 - Offline needed? Auth needed? (TBD)
-- Tech preferences: (e.g. vanilla vs framework, hosting — TBD)
 - No phone number or contact sync in v1 (username-only).
+
+### 6.1 Recommended tech stack (simple & free)
+
+- **Frontend:** **React + Vite** — fast dev experience, simple to build the 5-story building UI, forms (login/sign-up, status, add friend), and friend list. Runs in any modern browser.
+- **Backend / data:** **Supabase** (free tier) — PostgreSQL for users, friendships, and “here + floor” status; built-in **Realtime** so the building view updates when a friend changes floor without refreshing; **Auth** for sign-in/sign-up. Username-only login: use Supabase email/password auth under the hood with a generated email (e.g. `username@libraryapp.local`) so the user only types username + password; store display username in a `profiles` table.
+- **Hosting:** **Vercel** (free) for the React app; Supabase hosts database, auth, and realtime.
+- **Why this stack:** One backend (Supabase), one frontend (React), everything has a free tier, and Realtime gives a smooth “see who’s on which floor” experience without polling. Minimal moving parts.
 
 ---
 
@@ -98,6 +104,14 @@
 
 ---
 
+## 9. Setup / First steps (for development)
+
+- **Run the app:** From repo root, `cd app && npm install && npm run dev`. Open the URL shown (e.g. http://localhost:5173).
+- **Supabase:** Create a free project at [supabase.com](https://supabase.com), copy Project URL and anon key into `app/.env` (see `app/.env.example`). Optional: disable "Confirm email" in Auth settings so sign-up works without verification.
+- **Next implementation:** Add tables (`profiles`, `friendships`, `library_status`), RLS, and Realtime subscription so the building and friends list use live data.
+
+---
+
 ## Changelog
 
 - **2026-02-04** — Created project.md; planning started.
@@ -106,3 +120,4 @@
 - **2026-02-04** — Sign-in: both username and phone number; no phone verification. Friends: mutual (accept required); add via contact sync (if free) or search by username; can remove. Privacy: only friends see “here” status. Scope: BYU library only. Can change floor without toggling off; last update wins. Out of scope: notifications, library hours. **Main UI:** cartoon 5-story building with friends’ icons on the floor they’re on. Open: contact sync feasibility, screen list, how avatars work.
 - **2026-02-04** — **Username only** (no phone number). **Pages:** (1) Login, (2) Main page = building + your status (which floor or not there). **Avatars:** initials for now. Contact sync dropped. Open: sign-up on same page as login, friends UI as part of main page.
 - **2026-02-04** — Sign-up on the same screen as login (e.g. “Don’t have an account? Sign up” on same page).
+- **2026-02-04** — Tech stack chosen: React + Vite, Supabase, Vercel (§6.1). Setup: app in \`app/\`, Supabase client, LoginPage, MainPage, useAuth, §9 setup notes.
